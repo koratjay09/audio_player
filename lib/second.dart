@@ -27,6 +27,8 @@ class _secondState extends State<second> {
     pc = PageController(initialPage: widget.index);
     player.onPositionChanged.listen((Duration p) {
       print('Current position: $p');
+      current_time = p.inMilliseconds.toDouble();
+      setState(() {});
     });
   }
 
@@ -87,8 +89,8 @@ class _secondState extends State<second> {
               onChanged: (value) async {
                 await player.seek(Duration(milliseconds: value.toInt()));
               },
-              max: 0,
-              min: widget.songs[widget.index].duration!.toDouble(),
+              max: widget.songs[widget.index].duration!.toDouble(),
+              min: 0,
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 100),
@@ -98,7 +100,12 @@ class _secondState extends State<second> {
                   GFIconButton(
                     onPressed: () {
                       pc.jumpToPage(widget.index);
-                      widget.index--;
+                      if(widget.index>0){
+                        widget.index--;
+                      }
+                      else{
+                        widget.index=widget.songs.length-1;
+                      }
                       setState(() {});
                     },
                     color: Colors.transparent,
@@ -114,21 +121,33 @@ class _secondState extends State<second> {
                         await player.pause();
                       } else {
                         String local = widget.songs[widget.index].data;
-
                         await player.play(DeviceFileSource(local));
                       }
+                      setState(() {
+                        play = !play;
+                      });
                     },
                     color: Colors.transparent,
-                    icon: Icon(
-                      Icons.play_circle,
-                      size: 50,
-                    ),
+                    icon: play
+                        ? Icon(
+                            Icons.play_circle,
+                            size: 50,
+                          )
+                        : Icon(
+                            Icons.pause,
+                            size: 50,
+                          ),
                     alignment: Alignment.center,
                   ),
                   GFIconButton(
                     onPressed: () {
                       pc.jumpToPage(widget.index);
-                      widget.index++;
+                      if(widget.index<widget.songs.length-1){
+                        widget.index++;
+                      }
+                      else{
+                        widget.index=0;
+                      }
                       setState(() {});
                     },
                     color: Colors.transparent,
