@@ -114,6 +114,7 @@ class _secondState extends State<second> {
                         await player.pause();
                       } else {
                         String local = widget.songs[widget.index].data;
+
                         await player.play(DeviceFileSource(local));
                       }
                     },
